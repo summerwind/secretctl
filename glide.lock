@@ -1,0 +1,28 @@
+hash: fa704f2ee69993ccd50692402cd221e084eb6e191cd1a0716e71d231ac1d8cd8
+updated: 2017-06-30T00:19:15.082538371+09:00
+imports:
+- name: github.com/fatih/color
+  version: bf82308e8c8546dc2b945157173eb8a959ae9505
+- name: github.com/ghodss/yaml
+  version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
+- name: github.com/hashicorp/vault
+  version: 0b20ae0b9b7a748d607082b1add3663a28e31b68
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/spf13/cobra
+  version: dc208f4211e7f6df7ec8cb62640f57d3e154910d
+- name: github.com/spf13/pflag
+  version: a232f6d9f87afaaa08bafaff5da685f974b83313
+- name: github.com/spf13/viper
+  version: 5ed0fc31f7f453625df314d8e66b9791e8d13003
+- name: golang.org/x/crypto
+  version: 7e9105388ebff089b3f99f0ef676ea55a6da3a7e
+  subpackages:
+  - ssh/terminal
+- name: golang.org/x/sys
+  version: d75a52659825e75fff6158388dddc6a5b04f9ba5
+  subpackages:
+  - unix
+- name: gopkg.in/yaml.v2
+  version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
+testImports: []
