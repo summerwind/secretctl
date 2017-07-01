@@ -24,14 +24,14 @@ func NewGPGStorage(c *config.GPGStorageConfig) (*GPGStorage, error) {
 func (s *GPGStorage) ReadSecret(p string) ([]byte, error) {
 	_, err := os.Stat(p)
 	if os.IsNotExist(err) {
-		return nil, fmt.Errorf("file does not exist: %s\n", p)
+		return nil, fmt.Errorf("File does not exist: %s", p)
 	}
 
 	if s.Config.Passphrase == "" {
 		fmt.Print("Please enter the passphrase to unlock the secret key: ")
 		pass, err := terminal.ReadPassword(0)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Unable to read password: %s", err)
 		}
 		fmt.Println("")
 
@@ -41,7 +41,12 @@ func (s *GPGStorage) ReadSecret(p string) ([]byte, error) {
 	stdout := bytes.NewBuffer([]byte{})
 	stderr := bytes.NewBuffer([]byte{})
 
-	cmdOpts := []string{
+	gpgCmd := s.Config.Command
+	if gpgCmd == "" {
+		gpgCmd = "gpg"
+	}
+
+	gpgOpts := []string{
 		"--batch",
 		"--no-tty",
 		"--passphrase-fd", "0",
@@ -49,14 +54,14 @@ func (s *GPGStorage) ReadSecret(p string) ([]byte, error) {
 		"-d", p,
 	}
 
-	cmd := exec.Command("gpg", cmdOpts...)
+	cmd := exec.Command(gpgCmd, gpgOpts...)
 	cmd.Stdin = bytes.NewBuffer([]byte(s.Config.Passphrase))
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
 
 	err = cmd.Run()
 	if err != nil {
-		return nil, fmt.Errorf("gpg error: %s", stderr)
+		return nil, fmt.Errorf("Command error:\n%s", stderr)
 	}
 
 	return stdout.Bytes(), nil
@@ -69,35 +74,40 @@ func (s *GPGStorage) WriteSecret(p string, data []byte) error {
 	if os.IsNotExist(err) {
 		err := os.MkdirAll(dir, 0700)
 		if err != nil {
-			return fmt.Errorf("unable to create directory: %s\n", dir)
+			return fmt.Errorf("Unable to create directory: %s", dir)
 		}
 	}
 
 	if len(s.Config.Recipents) == 0 {
-		return errors.New("no recipents of encrypted file")
-	}
-
-	cmdOpts := []string{"-e"}
-	for _, r := range s.Config.Recipents {
-		cmdOpts = append(cmdOpts, "-r", r)
+		return errors.New("No recipents for encrypted file")
 	}
 
 	file, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE, 0600)
 	if err != nil {
-		return err
+		return fmt.Errorf("Unable to open file: %s - %s", p, err)
 	}
 	defer file.Close()
 
 	stderr := bytes.NewBuffer([]byte{})
 
-	cmd := exec.Command("gpg", cmdOpts...)
+	gpgCmd := s.Config.Command
+	if gpgCmd == "" {
+		gpgCmd = "gpg"
+	}
+
+	gpgOpts := []string{"-e"}
+	for _, r := range s.Config.Recipents {
+		gpgOpts = append(gpgOpts, "-r", r)
+	}
+
+	cmd := exec.Command(gpgCmd, gpgOpts...)
 	cmd.Stdin = bytes.NewBuffer(data)
 	cmd.Stdout = file
 	cmd.Stderr = stderr
 
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("gpg error: %s", stderr)
+		return nil, fmt.Errorf("Command error:\n%s", stderr)
 	}
 
 	return nil
