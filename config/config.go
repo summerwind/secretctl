@@ -25,7 +25,6 @@ type VaultStorageConfig struct {
 	ClientCert    string `json:"client_cert"`
 	ClientKey     string `json:"client_key"`
 	TLSSkipVerify bool   `json:"tls_skip_verify"`
-	TLSServerName string `json:"tls_server_name"`
 }
 
 type GPGStorageConfig struct {

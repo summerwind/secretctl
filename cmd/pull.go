@@ -33,6 +33,11 @@ func runPullCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	err = bindFlags(flags, c)
+	if err != nil {
+		return err
+	}
+
 	vault, err := storage.NewVaultStorage(c.Storage.Vault)
 	if err != nil {
 		return err

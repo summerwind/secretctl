@@ -12,8 +12,8 @@ import (
 func NewPushCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "push",
-		Short: "Update remote secrets based on local secrets",
-		Long:  "Update remote secrets based on local secrets.",
+		Short: "Push secret files and secret environment variables to remote storage",
+		Long:  "Push secret files and secret environment variables to remote storage.",
 		RunE:  runPushCommand,
 	}
 
@@ -29,6 +29,11 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	c, err := config.Load(cp)
+	if err != nil {
+		return err
+	}
+
+	err = bindFlags(flags, c)
 	if err != nil {
 		return err
 	}

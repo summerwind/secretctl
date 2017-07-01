@@ -13,8 +13,8 @@ import (
 func NewExecCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "exec",
-		Short: "Pull secrets for environment variable and run specified command",
-		Long:  "Pull secrets for environment variable and run specified command.",
+		Short: "Pull secret environment variables from remote storage and run specified command",
+		Long:  "Pull secret environment variables from remote storage and run specified command.",
 		RunE:  runExecCommand,
 	}
 
@@ -30,6 +30,11 @@ func runExecCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	c, err := config.Load(cp)
+	if err != nil {
+		return err
+	}
+
+	err = bindFlags(flags, c)
 	if err != nil {
 		return err
 	}

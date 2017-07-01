@@ -26,6 +26,18 @@ func main() {
 	flags.Bool("version", false, "Display version information and exit")
 	flags.Bool("help", false, "Display this help and exit")
 
+	flags.String("vault-token", "", "The authentication token for the Vault server")
+	flags.String("vault-addr", "", "The address of the Vault server")
+	flags.String("vault-ca-cert", "", "Path to a PEM encoded CA cert file to use to verify the Vault server certificate")
+	flags.String("vault-ca-path", "", "Path to a directory of PEM encoded CA cert files to verify the Vault server certificate")
+	flags.String("vault-client-cert", "", "Path to a PEM encoded client certificate for TLS authentication to the Vault server")
+	flags.String("vault-client-key", "", "Path to an unencrypted PEM encoded private key matching the client certificate")
+	flags.Bool("vault-tls-skip-verify", false, "Do not verify TLS certificate")
+
+	flags.StringSlice("gpg-recipent", []string{}, "Users who can decrypt files")
+	flags.String("gpg-passphrase", "", "The passphrase of the GPG key")
+	flags.String("gpg-command", "", "Path to a file to use as gpg command")
+
 	cli.AddCommand(cmd.NewPushCommand())
 	cli.AddCommand(cmd.NewPullCommand())
 	cli.AddCommand(cmd.NewExecCommand())

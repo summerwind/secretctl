@@ -18,12 +18,11 @@ func NewVaultStorage(c *config.VaultStorageConfig) (*VaultStorage, error) {
 	vc.Address = c.Addr
 
 	vtc := &vault.TLSConfig{
-		CACert:        c.CACert,
-		CAPath:        c.CAPath,
-		ClientCert:    c.ClientCert,
-		ClientKey:     c.ClientKey,
-		TLSServerName: c.TLSServerName,
-		Insecure:      c.TLSSkipVerify,
+		CACert:     c.CACert,
+		CAPath:     c.CAPath,
+		ClientCert: c.ClientCert,
+		ClientKey:  c.ClientKey,
+		Insecure:   c.TLSSkipVerify,
 	}
 
 	err := vc.ConfigureTLS(vtc)
