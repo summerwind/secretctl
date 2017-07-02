@@ -104,7 +104,6 @@ func bindFlags(flags *pflag.FlagSet, c *config.Config) error {
 		gsc.Command = gpgCommand
 	}
 
-	fmt.Println(vsc)
 	return nil
 }
 
@@ -127,7 +126,7 @@ func ReadSecret(key string, env bool) ([]byte, error) {
 	if env {
 		ev := os.Getenv(key)
 		if ev == "" {
-			return nil, fmt.Errorf("environment variable does not exist: %s", key)
+			return nil, fmt.Errorf("Environment variable does not exist: %s", key)
 		}
 
 		buf = []byte(ev)
@@ -154,7 +153,7 @@ func WriteSecret(key string, data []byte, env bool) (int, error) {
 		if os.IsNotExist(err) {
 			err := os.MkdirAll(dir, 0700)
 			if err != nil {
-				return 0, fmt.Errorf("unable to create directory: %s\n", dir)
+				return 0, fmt.Errorf("Unable to create directory: %s", dir)
 			}
 		}
 

@@ -88,7 +88,7 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 		case s.GPG != nil:
 			err = gpg.WriteSecret(NormalizePath(cp, s.GPG.Path), buf)
 		default:
-			err = errors.New("Storage configuration is required")
+			err = errors.New("Storage configuration required")
 		}
 
 		fmt.Printf("[EnvVar] Pushed: %s\n", name)

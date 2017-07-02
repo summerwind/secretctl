@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	"github.com/ghodss/yaml"
@@ -52,12 +53,12 @@ func Load(p string) (*Config, error) {
 
 	buf, err := ioutil.ReadFile(p)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Unable to load configuration file: %s", err)
 	}
 
 	err = yaml.Unmarshal(buf, &c)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Unable to parse configuration file: %s", err)
 	}
 
 	return &c, nil

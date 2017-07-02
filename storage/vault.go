@@ -60,21 +60,21 @@ func (s *VaultStorage) ReadSecret(p string) ([]byte, error) {
 
 	secret, err := s.Client.Logical().Read(p)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Unable to read secret from Vault: %s", err)
 	}
 
 	if secret == nil {
-		return nil, fmt.Errorf("Secret does not exist at %s\n", p)
+		return nil, fmt.Errorf("Secret does not exist at %s", p)
 	}
 
 	raw, ok := secret.Data["value"]
 	if !ok {
-		return nil, fmt.Errorf("No value found at %s\n", p)
+		return nil, fmt.Errorf("No secret found at %s", p)
 	}
 
 	val, ok := raw.(string)
 	if !ok {
-		return nil, fmt.Errorf("No value found at %s\n", p)
+		return nil, fmt.Errorf("No secret found at %s", p)
 	}
 
 	return []byte(val), nil
@@ -91,7 +91,7 @@ func (s *VaultStorage) WriteSecret(p string, data []byte) error {
 
 	_, err := s.Client.Logical().Write(p, vd)
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("Unable to write secret to Vault: %s", err)
 	}
 
 	return nil

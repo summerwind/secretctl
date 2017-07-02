@@ -60,7 +60,7 @@ func runPullCommand(cmd *cobra.Command, args []string) error {
 		case s.GPG != nil:
 			buf, err = gpg.ReadSecret(NormalizePath(cp, s.GPG.Path))
 		default:
-			err = errors.New("Storage configuration is required")
+			err = errors.New("Storage configuration required")
 		}
 
 		_, err = WriteSecret(NormalizePath(cp, path), buf, false)
