@@ -8,11 +8,14 @@ import (
 	"github.com/summerwind/secretctl/config"
 )
 
+// VaultStorage represents a remote storage corresponding to Vault.
 type VaultStorage struct {
 	Config *config.VaultStorageConfig
 	Client *vault.Client
 }
 
+// NewVaultStorage returns a VaultStorage with specified
+// configuration.
 func NewVaultStorage(c *config.VaultStorageConfig) (*VaultStorage, error) {
 	vc := vault.DefaultConfig()
 	vc.Address = c.Addr
@@ -53,6 +56,7 @@ func NewVaultStorage(c *config.VaultStorageConfig) (*VaultStorage, error) {
 	return &storage, nil
 }
 
+// ReadSecret reads a secret from Vault with specified path.
 func (s *VaultStorage) ReadSecret(p string) ([]byte, error) {
 	if p[0] == '/' {
 		p = p[1:]
@@ -80,6 +84,7 @@ func (s *VaultStorage) ReadSecret(p string) ([]byte, error) {
 	return []byte(val), nil
 }
 
+// WriteSecret writes a secret to Vault with specified path.
 func (s *VaultStorage) WriteSecret(p string, data []byte) error {
 	if p[0] == '/' {
 		p = p[1:]

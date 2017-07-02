@@ -13,14 +13,18 @@ import (
 	"github.com/summerwind/secretctl/config"
 )
 
+// GPGStorage represents a local storage with GPG encription.
 type GPGStorage struct {
 	Config *config.GPGStorageConfig
 }
 
+// NewGPGStorage returns a GPGStorage with specified configuration.
 func NewGPGStorage(c *config.GPGStorageConfig) (*GPGStorage, error) {
 	return &GPGStorage{Config: c}, nil
 }
 
+// ReadSecret decrypts a encrypted file with the specified path by
+// using gpg command.
 func (s *GPGStorage) ReadSecret(p string) ([]byte, error) {
 	_, err := os.Stat(p)
 	if os.IsNotExist(err) {
@@ -67,6 +71,8 @@ func (s *GPGStorage) ReadSecret(p string) ([]byte, error) {
 	return stdout.Bytes(), nil
 }
 
+// WriteSecret encrypts a secret to the specified path by using gpg
+// command.
 func (s *GPGStorage) WriteSecret(p string, data []byte) error {
 	dir := filepath.Dir(p)
 
