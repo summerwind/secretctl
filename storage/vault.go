@@ -96,7 +96,7 @@ func (s *VaultStorage) WriteSecret(p string, data []byte) error {
 
 	_, err := s.Client.Logical().Write(p, vd)
 	if err != nil {
-		return nil, fmt.Errorf("Unable to write secret to Vault: %s", err)
+		return fmt.Errorf("Unable to write secret to Vault: %s", err)
 	}
 
 	return nil

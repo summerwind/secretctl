@@ -113,7 +113,7 @@ func (s *GPGStorage) WriteSecret(p string, data []byte) error {
 
 	err = cmd.Run()
 	if err != nil {
-		return nil, fmt.Errorf("Command error:\n%s", stderr)
+		return fmt.Errorf("Command error:\n%s", stderr)
 	}
 
 	return nil

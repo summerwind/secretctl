@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	VERSION string = "2.0.0"
+	VERSION string = "latest"
 	COMMIT  string = "HEAD"
 )
 
@@ -47,7 +47,7 @@ func main() {
 
 	err := cli.Execute()
 	if err != nil {
-		fmt.Fprinln(os.Stderr, err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
