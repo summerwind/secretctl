@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	vault "github.com/hashicorp/vault/api"
@@ -36,6 +37,11 @@ func NewVaultStorage(c *config.VaultStorageConfig) (*VaultStorage, error) {
 	err = vc.ReadEnvironment()
 	if err != nil {
 		return nil, err
+	}
+
+	tc := vc.HttpClient.Transport.(*http.Transport).TLSClientConfig
+	if !tc.InsecureSkipVerify {
+		tc.InsecureSkipVerify = c.TLSSkipVerify
 	}
 
 	client, err := vault.NewClient(vc)
