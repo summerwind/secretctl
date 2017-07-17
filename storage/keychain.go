@@ -12,9 +12,9 @@ func NewKeychainStorage() (*KeychainStorage, error) {
 }
 
 func (s *KeychainStorage) ReadSecret(label string) ([]byte, error) {
-	return nil, Unsupported
+	return nil, ErrUnsupported
 }
 
 func (s *KeychainStorage) WriteSecret(label string, data []byte) error {
-	return Unsupported
+	return ErrUnsupported
 }
