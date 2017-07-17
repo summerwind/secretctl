@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -64,6 +65,10 @@ func NewVaultStorage(c *config.VaultStorageConfig) (*VaultStorage, error) {
 
 // ReadSecret reads a secret from Vault with specified path.
 func (s *VaultStorage) ReadSecret(p string) ([]byte, error) {
+	if p == "" {
+		return nil, errors.New("path is required")
+	}
+
 	if p[0] == '/' {
 		p = p[1:]
 	}
@@ -92,6 +97,10 @@ func (s *VaultStorage) ReadSecret(p string) ([]byte, error) {
 
 // WriteSecret writes a secret to Vault with specified path.
 func (s *VaultStorage) WriteSecret(p string, data []byte) error {
+	if p == "" {
+		return errors.New("path is required")
+	}
+
 	if p[0] == '/' {
 		p = p[1:]
 	}

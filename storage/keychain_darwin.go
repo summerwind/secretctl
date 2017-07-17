@@ -3,6 +3,7 @@
 package storage
 
 import (
+	"errors"
 	"fmt"
 
 	keychain "github.com/keybase/go-keychain"
@@ -22,6 +23,10 @@ func NewKeychainStorage() (*KeychainStorage, error) {
 }
 
 func (s *KeychainStorage) ReadSecret(label string) ([]byte, error) {
+	if label == "" {
+		return nil, errors.New("label is required")
+	}
+
 	query := s.newItem(label)
 	query.SetMatchLimit(keychain.MatchLimitOne)
 	query.SetReturnData(true)
@@ -35,6 +40,10 @@ func (s *KeychainStorage) ReadSecret(label string) ([]byte, error) {
 }
 
 func (s *KeychainStorage) WriteSecret(label string, data []byte) error {
+	if label == "" {
+		return errors.New("label is required")
+	}
+
 	query := s.newItem(label)
 	query.SetMatchLimit(keychain.MatchLimitOne)
 	query.SetReturnAttributes(true)

@@ -26,6 +26,10 @@ func NewGPGStorage(c *config.GPGStorageConfig) (*GPGStorage, error) {
 // ReadSecret decrypts a encrypted file with the specified path by
 // using gpg command.
 func (s *GPGStorage) ReadSecret(p string) ([]byte, error) {
+	if p == "" {
+		return nil, errors.New("path is required")
+	}
+
 	_, err := os.Stat(p)
 	if os.IsNotExist(err) {
 		return nil, fmt.Errorf("File does not exist: %s", p)
@@ -74,6 +78,10 @@ func (s *GPGStorage) ReadSecret(p string) ([]byte, error) {
 // WriteSecret encrypts a secret to the specified path by using gpg
 // command.
 func (s *GPGStorage) WriteSecret(p string, data []byte) error {
+	if p == "" {
+		return errors.New("path is required")
+	}
+
 	dir := filepath.Dir(p)
 
 	_, err := os.Stat(dir)
