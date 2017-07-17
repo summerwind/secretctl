@@ -1,14 +1,47 @@
-hash: fa704f2ee69993ccd50692402cd221e084eb6e191cd1a0716e71d231ac1d8cd8
-updated: 2017-06-30T00:19:15.082538371+09:00
+hash: 0faa0d30fa9703929e4db8c50cc46bcc267633a5e7d987c4e15dbb3b977038f0
+updated: 2017-07-13T23:57:49.581846282+09:00
 imports:
 - name: github.com/fatih/color
   version: bf82308e8c8546dc2b945157173eb8a959ae9505
+- name: github.com/fatih/structs
+  version: 7e5a8eef611ee84dd359503f3969f80df4c50723
 - name: github.com/ghodss/yaml
   version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
+- name: github.com/hashicorp/errwrap
+  version: 7554cd9344cec97297fa6649b055a8c98c2a1e55
+- name: github.com/hashicorp/go-cleanhttp
+  version: 3573b8b52aa7b37b9358d966a898feb387f62437
+- name: github.com/hashicorp/go-multierror
+  version: ed905158d87462226a13fe39ddf685ea65f1c11f
+- name: github.com/hashicorp/go-rootcerts
+  version: 6bb64b370b90e7ef1fa532be9e591a81c3493e00
+- name: github.com/hashicorp/hcl
+  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
+  subpackages:
+  - hcl/ast
+  - hcl/parser
+  - hcl/scanner
+  - hcl/strconv
+  - hcl/token
+  - json/parser
+  - json/scanner
+  - json/token
 - name: github.com/hashicorp/vault
   version: 0b20ae0b9b7a748d607082b1add3663a28e31b68
+  subpackages:
+  - api
+  - helper/compressutil
+  - helper/jsonutil
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/keybase/go-keychain
+  version: 69c518e5bfff89ad62db81a185634d3aeac3c453
+- name: github.com/mitchellh/go-homedir
+  version: b8bc1bf767474819792c23f32d8286a45736f1c6
+- name: github.com/mitchellh/mapstructure
+  version: d0303fe809921458f417bcf828397a65db30a7e4
+- name: github.com/sethgrid/pester
+  version: 99271bb5a99e5769f688c483eabb3c22d71ebf93
 - name: github.com/spf13/cobra
   version: dc208f4211e7f6df7ec8cb62640f57d3e154910d
 - name: github.com/spf13/pflag
@@ -19,6 +52,13 @@ imports:
   version: 7e9105388ebff089b3f99f0ef676ea55a6da3a7e
   subpackages:
   - ssh/terminal
+- name: golang.org/x/net
+  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
+  subpackages:
+  - http2
+  - http2/hpack
+  - idna
+  - lex/httplex
 - name: golang.org/x/sys
   version: d75a52659825e75fff6158388dddc6a5b04f9ba5
   subpackages:

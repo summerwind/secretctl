@@ -43,6 +43,11 @@ func runPullCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	keychain, err := storage.NewKeychainStorage()
+	if err != nil {
+		return err
+	}
+
 	gpg, err := storage.NewGPGStorage(c.Storage.GPG)
 	if err != nil {
 		return err
@@ -57,6 +62,8 @@ func runPullCommand(cmd *cobra.Command, args []string) error {
 		switch {
 		case s.Vault != nil:
 			buf, err = vault.ReadSecret(s.Vault.Path)
+		case s.Keychain != nil:
+			buf, err = keychain.ReadSecret(s.Keychain.Label)
 		case s.GPG != nil:
 			buf, err = gpg.ReadSecret(NormalizePath(cp, s.GPG.Path))
 		default:
@@ -65,6 +72,10 @@ func runPullCommand(cmd *cobra.Command, args []string) error {
 
 		_, err = WriteSecret(NormalizePath(cp, path), buf, false)
 		if err != nil {
+			if err == storage.Unsupported {
+				fmt.Printf("[File] Skipped: %s (unsupported)\n", path)
+				continue
+			}
 			return err
 		}
 

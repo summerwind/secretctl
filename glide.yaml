@@ -14,3 +14,5 @@ import:
   version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 - package: github.com/hashicorp/vault
   version: 0b20ae0b9b7a748d607082b1add3663a28e31b68
+- package: github.com/keybase/go-keychain
+  version: 69c518e5bfff89ad62db81a185634d3aeac3c453

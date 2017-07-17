@@ -43,6 +43,11 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	keychain, err := storage.NewKeychainStorage()
+	if err != nil {
+		return err
+	}
+
 	gpg, err := storage.NewGPGStorage(c.Storage.GPG)
 	if err != nil {
 		return err
@@ -62,6 +67,8 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 		switch {
 		case s.Vault != nil:
 			err = vault.WriteSecret(s.Vault.Path, buf)
+		case s.Keychain != nil:
+			err = keychain.WriteSecret(s.Keychain.Label, buf)
 		case s.GPG != nil:
 			err = gpg.WriteSecret(NormalizePath(cp, s.GPG.Path), buf)
 		default:
@@ -69,6 +76,10 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 		}
 
 		if err != nil {
+			if err == storage.Unsupported {
+				fmt.Printf("[File] Skipped: %s (unsupported)\n", path)
+				continue
+			}
 			return err
 		}
 
@@ -89,6 +100,8 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 		switch {
 		case s.Vault != nil:
 			err = vault.WriteSecret(s.Vault.Path, buf)
+		case s.Keychain != nil:
+			err = keychain.WriteSecret(s.Keychain.Label, buf)
 		case s.GPG != nil:
 			err = gpg.WriteSecret(NormalizePath(cp, s.GPG.Path), buf)
 		default:
@@ -96,6 +109,10 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 		}
 
 		if err != nil {
+			if err == storage.Unsupported {
+				fmt.Printf("[EnvVar] Skipped: %s (unsupported)\n", name)
+				continue
+			}
 			return err
 		}
 

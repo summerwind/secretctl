@@ -42,14 +42,20 @@ type GPGStorageConfig struct {
 
 // Secret represents secret file or secret env var.
 type Secret struct {
-	PullOnly bool         `json:"pull_only"`
-	Vault    *VaultOption `json:"vault"`
-	GPG      *GPGOption   `json:"gpg"`
+	PullOnly bool            `json:"pull_only"`
+	Vault    *VaultOption    `json:"vault"`
+	Keychain *KeychainOption `json:"keychain"`
+	GPG      *GPGOption      `json:"gpg"`
 }
 
 // VaultOption represents a option for Vault storage.
 type VaultOption struct {
 	Path string `json:"path"`
+}
+
+// KeychainOption represents a option for Vault storage.
+type KeychainOption struct {
+	Label string `json:"label"`
 }
 
 // GPGOption represents a option for GPG storage.
