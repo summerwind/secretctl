@@ -65,6 +65,11 @@ func run(cmd *cobra.Command, args []string) error {
 		os.Exit(0)
 	}
 
+	if len(args) == 0 {
+		cmd.Usage()
+		os.Exit(0)
+	}
+
 	return nil
 }
 
