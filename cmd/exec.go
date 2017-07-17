@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -40,43 +39,19 @@ func runExecCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	vault, err := storage.NewVaultStorage(c.Storage.Vault)
+	s, err := storage.NewStorage(c)
 	if err != nil {
 		return err
 	}
 
-	keychain, err := storage.NewKeychainStorage()
-	if err != nil {
-		return err
-	}
-
-	gpg, err := storage.NewGPGStorage(c.Storage.GPG)
-	if err != nil {
-		return err
-	}
-
-	for name, s := range c.EnvVars {
-		var (
-			buf []byte
-			err error
-		)
-
-		switch {
-		case s.Vault != nil:
-			buf, err = vault.ReadSecret(s.Vault.Path)
-		case s.Keychain != nil:
-			buf, err = keychain.ReadSecret(s.Keychain.Label)
-		case s.GPG != nil:
-			buf, err = gpg.ReadSecret(NormalizePath(cp, s.GPG.Path))
-		default:
-			err = errors.New("Storage configuration required")
-		}
-
+	for name, secret := range c.EnvVars {
+		buf, err := s.ReadSecret(secret)
 		if err != nil {
-			if err == storage.Unsupported {
-				fmt.Printf("[EnvVars] Skipped: %s (unsupported)\n", name)
+			if err == storage.ErrUnsupported {
+				fmt.Printf("Skipped: %s (%s)\n", name, err)
 				continue
 			}
+
 			return err
 		}
 

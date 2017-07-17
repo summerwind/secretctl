@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -38,85 +37,47 @@ func runPushCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	vault, err := storage.NewVaultStorage(c.Storage.Vault)
+	s, err := storage.NewStorage(c)
 	if err != nil {
 		return err
 	}
 
-	keychain, err := storage.NewKeychainStorage()
-	if err != nil {
-		return err
-	}
-
-	gpg, err := storage.NewGPGStorage(c.Storage.GPG)
-	if err != nil {
-		return err
-	}
-
-	for path, s := range c.Files {
-		if s.PullOnly {
-			fmt.Printf("[File] Skipped: %s (pull only)\n", path)
-			continue
-		}
-
-		buf, err := ReadSecret(NormalizePath(cp, path), false)
+	for path, secret := range c.Files {
+		buf, err := ReadSecret(c.NormalizePath(path), false)
 		if err != nil {
 			return err
 		}
 
-		switch {
-		case s.Vault != nil:
-			err = vault.WriteSecret(s.Vault.Path, buf)
-		case s.Keychain != nil:
-			err = keychain.WriteSecret(s.Keychain.Label, buf)
-		case s.GPG != nil:
-			err = gpg.WriteSecret(NormalizePath(cp, s.GPG.Path), buf)
-		default:
-			err = errors.New("Storage configuration is required")
-		}
-
+		err = s.WriteSecret(secret, buf)
 		if err != nil {
-			if err == storage.Unsupported {
-				fmt.Printf("[File] Skipped: %s (unsupported)\n", path)
+			if err == storage.ErrPullOnly || err == storage.ErrUnsupported {
+				fmt.Printf("Skipped: %s (%s)\n", path, err)
 				continue
 			}
+
 			return err
 		}
 
-		fmt.Printf("[File] Pushed: %s\n", path)
+		fmt.Printf("Pushed: %s\n", path)
 	}
 
-	for name, s := range c.EnvVars {
-		if s.PullOnly {
-			fmt.Printf("[EnvVar] Skipped: %s (pull only)\n", name)
-			continue
-		}
-
+	for name, secret := range c.EnvVars {
 		buf, err := ReadSecret(name, true)
 		if err != nil {
 			return err
 		}
 
-		switch {
-		case s.Vault != nil:
-			err = vault.WriteSecret(s.Vault.Path, buf)
-		case s.Keychain != nil:
-			err = keychain.WriteSecret(s.Keychain.Label, buf)
-		case s.GPG != nil:
-			err = gpg.WriteSecret(NormalizePath(cp, s.GPG.Path), buf)
-		default:
-			err = errors.New("Storage configuration required")
-		}
-
+		err = s.WriteSecret(secret, buf)
 		if err != nil {
-			if err == storage.Unsupported {
-				fmt.Printf("[EnvVar] Skipped: %s (unsupported)\n", name)
+			if err == storage.ErrPullOnly || err == storage.ErrUnsupported {
+				fmt.Printf("Skipped: %s (%s)\n", name, err)
 				continue
 			}
+
 			return err
 		}
 
-		fmt.Printf("[EnvVar] Pushed: %s\n", name)
+		fmt.Printf("Pushed: %s\n", name)
 	}
 
 	return nil

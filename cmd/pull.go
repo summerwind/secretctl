@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -38,48 +37,28 @@ func runPullCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	vault, err := storage.NewVaultStorage(c.Storage.Vault)
+	s, err := storage.NewStorage(c)
 	if err != nil {
 		return err
 	}
 
-	keychain, err := storage.NewKeychainStorage()
-	if err != nil {
-		return err
-	}
-
-	gpg, err := storage.NewGPGStorage(c.Storage.GPG)
-	if err != nil {
-		return err
-	}
-
-	for path, s := range c.Files {
-		var (
-			buf []byte
-			err error
-		)
-
-		switch {
-		case s.Vault != nil:
-			buf, err = vault.ReadSecret(s.Vault.Path)
-		case s.Keychain != nil:
-			buf, err = keychain.ReadSecret(s.Keychain.Label)
-		case s.GPG != nil:
-			buf, err = gpg.ReadSecret(NormalizePath(cp, s.GPG.Path))
-		default:
-			err = errors.New("Storage configuration required")
-		}
-
-		_, err = WriteSecret(NormalizePath(cp, path), buf, false)
+	for path, secret := range c.Files {
+		buf, err := s.ReadSecret(secret)
 		if err != nil {
-			if err == storage.Unsupported {
-				fmt.Printf("[File] Skipped: %s (unsupported)\n", path)
+			if err == storage.ErrUnsupported {
+				fmt.Printf("Skipped: %s (%s)\n", path, err)
 				continue
 			}
+
 			return err
 		}
 
-		fmt.Printf("[File] Pulled: %s\n", path)
+		_, err = WriteSecret(c.NormalizePath(path), buf, false)
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("Pulled: %s\n", path)
 	}
 
 	return nil

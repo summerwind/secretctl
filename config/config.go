@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 
 	"github.com/ghodss/yaml"
 )
@@ -10,9 +11,10 @@ import (
 // Config represents a configuration of secretctl.This includes
 // configuration for storage, secret files and secret env vars.
 type Config struct {
-	Storage *StorageConfig     `json:"storage"`
-	Files   map[string]*Secret `json:"files"`
-	EnvVars map[string]*Secret `json:"env_vars"`
+	BasePath string             `json:"base_path"`
+	Storage  *StorageConfig     `json:"storage"`
+	Files    map[string]*Secret `json:"files"`
+	EnvVars  map[string]*Secret `json:"env_vars"`
 }
 
 // StorageConfig represents a configuration for storage. This includes
@@ -78,5 +80,19 @@ func Load(p string) (*Config, error) {
 		return nil, fmt.Errorf("Unable to parse configuration file: %s", err)
 	}
 
+	if c.BasePath == "" {
+		c.BasePath = filepath.Dir(p)
+	}
+
 	return &c, nil
+}
+
+// NormalizePath returns a path string which is combined the given
+// path and base path based on the current configuration.
+func (c *Config) NormalizePath(p string) string {
+	if p != "" && !filepath.IsAbs(p) {
+		p = filepath.Join(c.BasePath, p)
+	}
+
+	return p
 }

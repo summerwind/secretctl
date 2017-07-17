@@ -107,16 +107,6 @@ func bindFlags(flags *pflag.FlagSet, c *config.Config) error {
 	return nil
 }
 
-func NormalizePath(cp, fp string) string {
-	dir := filepath.Dir(cp)
-
-	if fp != "" && !filepath.IsAbs(fp) {
-		fp = filepath.Join(dir, fp)
-	}
-
-	return fp
-}
-
 func ReadSecret(key string, env bool) ([]byte, error) {
 	var (
 		buf []byte
