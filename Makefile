@@ -31,6 +31,14 @@ dist:
 	GOARCH=amd64 GOOS=linux go build $(BUILD_FLAGS) .
 	tar -czf dist/secretctl_linux_amd64.tar.gz secretctl
 	rm -rf secretctl
+	
+	GOARCH=arm64 GOOS=linux go build $(BUILD_FLAGS) .
+	tar -czf dist/secretctl_linux_arm64.tar.gz secretctl
+	rm -rf secretctl
+	
+	GOARCH=arm GOOS=linux go build $(BUILD_FLAGS) .
+	tar -czf dist/secretctl_linux_arm.tar.gz secretctl
+	rm -rf secretctl
 
 vendor:
 	glide install
